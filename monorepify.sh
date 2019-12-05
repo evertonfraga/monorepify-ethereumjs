@@ -7,6 +7,13 @@ set -e
 CWD=`pwd`
 MONOREPO="$CWD/ethereumjs-vm"
 
+# Log function
+GREEN="\033[0;32m"
+NOCOLOR="\033[0m"
+info() {
+  echo -e "${GREEN}INFO: $1 ${NOCOLOR}"
+}
+
 # List of repos we want to bring in
 EXTERNAL_REPOS="account block blockchain tx"
 ALL_REPOS="$EXTERNAL_REPOS vm"
@@ -16,101 +23,104 @@ ALL_REPOS="$EXTERNAL_REPOS vm"
 # 
 # 1. copy repos
   # 1.1 Clone from original repos
-  echo "Cloning all repos... "
+  info "Cloning all repos... "
   for REPO in $ALL_REPOS
   do
     git clone git@github.com:ethereumjs/ethereumjs-$REPO.git
   done
 
+  # TODO: REMOVE WHEN GH ACTIONS PR ARE MERGED
+  cd $CWD/ethereumjs-account && git pull origin github-actions
+  # cd $CWD/ethereumjs-block && git checkout github-actions
+  cd $CWD/ethereumjs-blockchain && git pull origin github-actions
+  # cd $CWD/ethereumjs-tx && git checkout github-actions
+  # cd $CWD/ethereumjs  -vm && git checkout github-actions
+  # END-TODO
+
   # Doing changes in an own fork. TODO: Change to ethereumjs when it comes the time
   # git clone git@github.com:evertonfraga/ethereumjs-vm.git
-  echo "OK"
+  # info "OK"
 
-  # 1.2 Destination repo, monorepo-1 branch
-  echo -n "Creating branch monorepo... "
-  cd $MONOREPO && git checkout -b monorepo
+  # 1.2 Destination repo, monorepo branch
+  info "Creating branch monorepo... "
+  cd $MONOREPO && git checkout -b monorepo-1
   cd $CWD
 
-  # 1.3 Create subdirectories for each repo
-  echo "Moving each repo to a subdirectory..."
-  for REPO in $ALL_REPOS
-  do
-    mkdir -p ethereumjs-$REPO/packages/$REPO
-  done
-  echo "OK"
-
   # 1.4 Moving each repo to a subdirectory
-  echo -n "Moving all files 1 directory deeper..."
+  info "Moving all files 1 directory deeper..."
   for REPO in $ALL_REPOS
   do
+    mkdir -p $CWD/ethereumjs-$REPO/packages/$REPO
     cd $CWD/ethereumjs-$REPO
     ls -A1 | grep -Ev "^(packages|\.git)$" | xargs -I{} git mv {} packages/$REPO
     git commit -m "monorepo: moving $REPO"
   done
-  echo "OK"
+  info "OK"
 
   # 1.5 Adding other directories as remote
   # no need to add VM here, as it is self
-  echo -n "Adding other directories as remote..."
+  info "Adding other directories as remote..."
   cd $MONOREPO
   
   for REPO in $EXTERNAL_REPOS
   do
     git remote add $REPO $CWD/ethereumjs-$REPO/
   done
-  echo "OK"
+  info "OK"
 
   # 1.6 pulling new remotes from other local repos
   git fetch --all
 
   # 1.7 merging "remote" repos in monorepo
-  echo "Merging other repos to monorepo..."
+  info "Merging other repos to monorepo..."
 
   for REPO in $EXTERNAL_REPOS
   do
+    info "Merging ethereumjs-$REPO"
     git merge $REPO/master --no-edit --allow-unrelated-histories
   done
-  echo "OK"
+  info "OK"
 
 # 2. Handle files under ./.github
-  echo "Handle files under ./.github..."
+  info "Handle files under ./.github..."
   cd $MONOREPO
 
   # 2.1 Move vm/.github to root 
-  echo "Move vm/.github to root..."
+  info "Move vm/.github to root..."
   git mv packages/vm/.github/ .github
-  echo "OK"
+  info "OK"
 
   # 2.2 Move all .yml files to root
   # TODO: Remove -k from `git mv`
   # at this point there's no yaml file on master, so I'm using -k to suppress errors
-  echo "Move all .yml files to root..."
+  info "Move all .yml files to root..."
   git mv -k packages/*/.github/*.yml .github
-  echo "OK"
+  info "OK"
 
   # 2.3 Remove packages' github dir (and their remaining contributing.md)
+  info "Move all .yml files to root..."
   git rm -rf packages/*/.github
 
   git commit -m 'monorepo: Unifying .github files'
-  echo "OK"
+  info "OK"
 
 
 # Final checks
 for REPO in $ALL_REPOS
 do
   cd $CWD/ethereumjs-$REPO
-  echo "Commits in $REPO: `git rev-list --count HEAD`"
+  info "Commits in $REPO: `git rev-list --count HEAD`"
 done
 
 
 # Tearing down local origins
-  echo -n "Tears down remotes..."
+  info "Tears down remotes..."
   cd $MONOREPO
   for REPO in $EXTERNAL_REPOS
   do
     git remote remove $REPO
   done
-  echo "OK"
+  info "OK"
 
 
 # 3. TODO: Changing all link references to the new repo and file structure
