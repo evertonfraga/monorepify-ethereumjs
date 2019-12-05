@@ -15,7 +15,7 @@ info() {
 }
 
 # List of repos we want to bring in
-EXTERNAL_REPOS="account block blockchain tx"
+EXTERNAL_REPOS="account block blockchain tx common testing"
 ALL_REPOS="$EXTERNAL_REPOS vm"
 
 # Migrating repos preserving their git history
