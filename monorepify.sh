@@ -11,7 +11,7 @@ MONOREPO="$CWD/ethereumjs-vm"
 GREEN="\033[0;32m"
 NOCOLOR="\033[0m"
 info() {
-  echo -e "${GREEN}INFO: $1 ${NOCOLOR}"
+  echo -e "${GREEN}$1 ${NOCOLOR}"
 }
 
 # List of repos we want to bring in
@@ -29,7 +29,7 @@ ALL_REPOS="$EXTERNAL_REPOS vm"
     git clone git@github.com:ethereumjs/ethereumjs-$REPO.git
   done
 
-  # TODO: REMOVE WHEN GH ACTIONS PR ARE MERGED
+  # TODO: REMOVE WHEN GH ACTIONS PRS ARE MERGED
   cd $CWD/ethereumjs-account && git pull origin github-actions
   # cd $CWD/ethereumjs-block && git checkout github-actions
   cd $CWD/ethereumjs-blockchain && git pull origin github-actions
@@ -37,9 +37,6 @@ ALL_REPOS="$EXTERNAL_REPOS vm"
   # cd $CWD/ethereumjs  -vm && git checkout github-actions
   # END-TODO
 
-  # Doing changes in an own fork. TODO: Change to ethereumjs when it comes the time
-  # git clone git@github.com:evertonfraga/ethereumjs-vm.git
-  # info "OK"
 
   # 1.2 Destination repo, monorepo branch
   info "Creating branch monorepo... "
@@ -84,34 +81,62 @@ ALL_REPOS="$EXTERNAL_REPOS vm"
 # 2. Handle files under ./.github
   info "Handle files under ./.github..."
   cd $MONOREPO
-
-  # 2.1 Move vm/.github to root 
-  info "Move vm/.github to root..."
-  git mv packages/vm/.github/ .github
-  info "OK"
+  mkdir -p .github/workflows
 
   # 2.2 Move all .yml files to root
-  # TODO: Remove -k from `git mv`
-  # at this point there's no yaml file on master, so I'm using -k to suppress errors
-  info "Move all .yml files to root..."
-  git mv -k packages/*/.github/*.yml .github
+  info "Move all .github files to root..."
+  git mv packages/vm/.github/contributing.md .github/
+  git mv packages/*/.github/workflows/* .github/workflows
+
+  # 2.3 Remove packages' github dir (with their remaining contributing.md)
+  info "Remove packages' github dir..."
+  git rm -rf packages/*/.github --ignore-unmatch
+
+  info "Committing github changes..."
+  git commit -m 'monorepo: Moving .github files to root'
+  info "Handle files under ./.github: DONE"
+
+# 3. Inject paths to ignore for each job, so we don't run out of job runners
+
+  info "Making test cascade changes..."
+  cd $CWD
+  node make-test-cascade.js  
+  
+  cd $MONOREPO
+  git commit .github/workflows -m 'monorepo: Adding test cascade directives'
   info "OK"
 
-  # 2.3 Remove packages' github dir (and their remaining contributing.md)
-  info "Move all .yml files to root..."
-  git rm -rf packages/*/.github
-
-  git commit -m 'monorepo: Unifying .github files'
-  info "OK"
 
 
-# Final checks
-for REPO in $ALL_REPOS
-do
-  cd $CWD/ethereumjs-$REPO
-  info "Commits in $REPO: `git rev-list --count HEAD`"
-done
 
+
+
+
+# 4. TODO: Changing all link references to the new repo and file structure
+
+  # 4.1 Change repo name 
+  # As a commit is pinned, it is OK to keep the file structure
+  # Input:  https://github.com/ethereumjs/ethereumjs-tx/blob/5c81b38/src/types.ts#L8
+  # Output: https://github.com/ethereumjs/ethereumjs-vm/blob/5c81b38/src/types.ts#L8
+
+  # 4.2 Change file structure for links pointing to `master`
+  # Input:    https://github.com/ethereumjs/ethereumjs-block/blob/master/docs/index.md
+  # Output-2: https://github.com/ethereumjs/ethereumjs-vm/blob/master/docs/index.md
+  # Output-1: https://github.com/ethereumjs/ethereumjs-vm/blob/master/package/block/docs/index.md
+
+  # 3.3 Commit changes
+
+
+# TODO: 
+# implement lerna
+# merge vscode
+# merge prettier
+# deal with tsconfig
+# deal with tslint
+# make sure CHANGELOG can still be generated
+# Update link references on all .MD files
+# Update link references to the project badges
+# Update link references to package.json
 
 # Tearing down local origins
   info "Tears down remotes..."
@@ -122,38 +147,12 @@ done
   done
   info "OK"
 
+# Convenience. TODO: remove
+git remote add ev git@github.com:evertonfraga/ethereumjs-vm.git
 
-# 3. TODO: Changing all link references to the new repo and file structure
-
-  # 3.1 Change repo name 
-  # As a commit is pinned, it is OK to keep the file structure
-  # Input:  https://github.com/ethereumjs/ethereumjs-tx/blob/5c81b38/src/types.ts#L8
-  # Output: https://github.com/ethereumjs/ethereumjs-vm/blob/5c81b38/src/types.ts#L8
-
-  # 3.2 Change file structure for links pointing to `master`
-  # Input:    https://github.com/ethereumjs/ethereumjs-block/blob/master/docs/index.md
-  # Output-2: https://github.com/ethereumjs/ethereumjs-vm/blob/master/docs/index.md
-  # Output-1: https://github.com/ethereumjs/ethereumjs-vm/blob/master/package/block/docs/index.md
-
-  # 3.3 Commit changes
-
-
-
-
-# implement lerna
-# merge vscode
-# merge prettier
-# deal with tsconfig
-# deal with tslint
-# make sure CHANGELOG can still be generated
-# Update link references on all .MD files
-
-#  124  Account
-#  253  Block
-#  232  Blockchain
-#  466  TX
-# 1341  VM
-
-# 124 + 253 + 232 + 466 + 1341
-# = 2416
-# 9
+# Final checks
+for REPO in $ALL_REPOS
+do
+  cd $CWD/ethereumjs-$REPO
+  info "Commits in $REPO: `git rev-list --count HEAD`"
+done
