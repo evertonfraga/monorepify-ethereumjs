@@ -42,13 +42,11 @@ console.log(workflowFiles);
 workflowFiles.map(file => {
     // blockchain-test.yml -> blockchain
     const packageName = file.match(/^\w+/)[0]
-    console.log('PREFIX:', packageName);
 
     // If we don't have rules for this package, we move along.
     if (!ignorePaths.hasOwnProperty(packageName)) return;
 
     const filePath = path.join(basePath, file)
-    console.log(filePath);
 
     const obj = yaml.safeLoad(fs.readFileSync(filePath, 'utf8'))
     
@@ -59,6 +57,5 @@ workflowFiles.map(file => {
     }
 
     fs.writeFileSync(filePath, yaml.dump(obj))
-    console.log(yaml.dump(obj));
-
+    console.log(`Changes written to ${file}.`);
 })
