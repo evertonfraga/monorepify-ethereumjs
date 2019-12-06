@@ -32,9 +32,9 @@ ALL_REPOS="$EXTERNAL_REPOS vm"
   # TODO: REMOVE WHEN GH ACTIONS PRS ARE MERGED
   cd $CWD/ethereumjs-account && git pull origin github-actions
   # cd $CWD/ethereumjs-block && git checkout github-actions
-  cd $CWD/ethereumjs-blockchain && git pull origin github-actions
+  # MERGED! cd $CWD/ethereumjs-blockchain && git pull origin github-actions
   # cd $CWD/ethereumjs-tx && git checkout github-actions
-  # cd $CWD/ethereumjs  -vm && git checkout github-actions
+  # cd $CWD/ethereumjs-vm && git checkout github-actions
   # END-TODO
 
 
@@ -141,6 +141,7 @@ ALL_REPOS="$EXTERNAL_REPOS vm"
 # Tearing down local origins
   info "Tears down remotes..."
   cd $MONOREPO
+  git remote remove origin
   for REPO in $EXTERNAL_REPOS
   do
     git remote remove $REPO

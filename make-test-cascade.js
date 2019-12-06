@@ -34,11 +34,10 @@ workflowFiles.map(file => {
     // blockchain-test.yml -> blockchain
     const packageName = file.match(/^\w+/)[0]
 
-    // If we don't have rules for this package, we move along.
+    // If we don't have rules for this package, move along.
     if (!ignorePaths.hasOwnProperty(packageName)) return;
 
     const filePath = path.join(basePath, file)
-
     const obj = yaml.safeLoad(fs.readFileSync(filePath, 'utf8'))
     
     obj.on = {
