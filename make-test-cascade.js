@@ -7,14 +7,6 @@
 const yaml = require('js-yaml')
 const fs = require('fs')
 const path = require('path')
-const repos = [
-    'account',
-    'block',
-    'blockchain',
-    'testing',
-    'tx',
-    'vm'
-]
 
 /**
  * For each file, define which other tests should be ignored for each git pushhh
@@ -22,13 +14,12 @@ const repos = [
  * https://github.com/ethereumjs/ethereumjs-vm/issues/561#issuecomment-558943311
  */ 
 const ignorePaths = {
-    'account':    ['block', 'blockchain', 'common', 'testing', 'tx', 'vm'],
-    'block':      ['account', 'common', 'testing', 'tx'],
-    'blockchain': ['account', 'block', 'common', 'testing', 'tx'],
+    'account':    ['block', 'blockchain', 'common', 'tx', 'vm'],
+    'block':      ['account', 'common', 'tx'],
+    'blockchain': ['account', 'block', 'common', 'tx'],
     'common':     ['block', 'blockchain', 'tx', 'vm'],
-    'testing':    ['account', 'block', 'blockchain', 'common', 'tx'],
-    'tx':         ['account', 'common', 'testing', 'vm'],
-    'vm':         ['account', 'block', 'blockchain', 'common', 'testing', 'tx'],
+    'tx':         ['account', 'common', 'vm'],
+    'vm':         ['account', 'block', 'blockchain', 'common', 'tx'],
 }
 
 

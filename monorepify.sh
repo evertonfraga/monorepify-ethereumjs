@@ -150,6 +150,7 @@ ALL_REPOS="$EXTERNAL_REPOS vm"
 # Convenience. TODO: remove
 git remote add ev git@github.com:evertonfraga/ethereumjs-vm.git
 
+
 # Final checks
 for REPO in $ALL_REPOS
 do
