@@ -29,15 +29,6 @@ ALL_REPOS="$EXTERNAL_REPOS vm"
     git clone git@github.com:ethereumjs/ethereumjs-$REPO.git
   done
 
-  # TODO: REMOVE WHEN GH ACTIONS PRS ARE MERGED
-  cd $CWD/ethereumjs-account && git pull origin github-actions
-  # cd $CWD/ethereumjs-block && git checkout github-actions
-  # MERGED! cd $CWD/ethereumjs-blockchain && git pull origin github-actions
-  # cd $CWD/ethereumjs-tx && git checkout github-actions
-  # cd $CWD/ethereumjs-vm && git checkout github-actions
-  # END-TODO
-
-
   # 1.2 Destination repo, monorepo branch
   info "Creating branch monorepo... "
   cd $MONOREPO && git checkout -b monorepo-1
