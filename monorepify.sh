@@ -45,7 +45,28 @@ ALL_REPOS="$EXTERNAL_REPOS vm"
   done
   info "OK"
 
-  # 1.5 Adding other directories as remote
+  # 1.5 Renaming Tags
+  info "Renaming tags..."
+  for REPO in $ALL_REPOS
+  do
+    info "Renaming tags from ethereumjs-$REPO"
+    cd $CWD/ethereumjs-$REPO
+
+    # Remove prefix `v` from tags
+    # Input:  v1.0.2
+    # Output: 1.0.2
+    git tag -l | grep -E "^v" | sed -e "s/^v//" | xargs -I{} git tag {} v{}
+    # Remove tags with `v` prefix
+    git tag -l | grep -E "^v" | xargs -I{} git tag -d {}
+
+    # Implements new tag format
+    # Input:  1.0.2
+    # Output: @ethereumjs/vm@1.0.2
+    git tag -l | grep -E "^\d+\.\d+\.\d+" | xargs -I{} git tag @ethereumjs/$REPO@{} {}
+    # Remove tags in the old format
+    git tag -l | grep -E "^\d+\.\d+\.\d+" | xargs -I{} git tag -d {}
+
+  done
   # no need to add VM here, as it is self
   info "Adding other directories as remote..."
   cd $MONOREPO
@@ -56,8 +77,14 @@ ALL_REPOS="$EXTERNAL_REPOS vm"
   done
   info "OK"
 
-  # 1.6 pulling new remotes from other local repos
+  # 1.7 Managing remotes
+  # Removing origin 
+  git remote remove origin
+  # Fetching all new repos from local paths
   git fetch --all
+  # Adding a destination for the monorepo, ignoring its tags for now
+  git remote add ev git@github.com:evertonfraga/ethereumjs-vm.git
+
 
   # 1.7 merging "remote" repos in monorepo
   info "Merging other repos to monorepo..."
@@ -131,17 +158,11 @@ ALL_REPOS="$EXTERNAL_REPOS vm"
 
 # Tearing down local origins
   info "Tears down remotes..."
-  cd $MONOREPO
-  git remote remove origin
   for REPO in $EXTERNAL_REPOS
   do
     git remote remove $REPO
   done
   info "OK"
-
-# Convenience. TODO: remove
-git remote add ev git@github.com:evertonfraga/ethereumjs-vm.git
-
 
 # Final checks
 for REPO in $ALL_REPOS
