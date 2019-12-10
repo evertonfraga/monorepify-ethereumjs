@@ -26,7 +26,7 @@ ALL_REPOS="$EXTERNAL_REPOS vm"
   info "Cloning all repos... "
   for REPO in $ALL_REPOS
   do
-    git clone git@github.com:ethereumjs/ethereumjs-$REPO.git
+    git clone git@github.com:ethereumjs/ethereumjs-$REPO.git --single-branch
   done
 
   # 1.2 Destination repo, monorepo branch
