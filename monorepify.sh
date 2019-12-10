@@ -127,6 +127,18 @@ migrate_github_files() {
   info "Migrate Github Files: OK"
 }
 
+fix_cwd_github_files() {
+  info "Fix github actions execution paths"
+
+  cd $CWD
+  node adjust-cwd.js  
+  
+  cd $MONOREPO
+  git commit .github/workflows -m 'monorepo: Fixing execution paths for github actions'
+
+  info "Fix github actions execution paths: OK"
+}
+
 tear_down_remotes() {
   info "Tear down remotes..."
   for REPO in $EXTERNAL_REPOS
@@ -151,6 +163,8 @@ update_link_references() {
   info "implementation missing."
 }
 
+
+
 # 
 # Execution starts here
 # 
@@ -158,5 +172,6 @@ update_link_references() {
 setup_global_vars
 migrate_repos
 migrate_github_files
+fix_cwd_github_files
 tear_down_remotes
 update_link_references
