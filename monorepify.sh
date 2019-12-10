@@ -67,6 +67,8 @@ ALL_REPOS="$EXTERNAL_REPOS vm"
     git tag -l | grep -E "^\d+\.\d+\.\d+" | xargs -I{} git tag -d {}
 
   done
+
+  # 1.6 Adding other directories as remote
   # no need to add VM here, as it is self
   info "Adding other directories as remote..."
   cd $MONOREPO
@@ -86,7 +88,7 @@ ALL_REPOS="$EXTERNAL_REPOS vm"
   git remote add ev git@github.com:evertonfraga/ethereumjs-vm.git
 
 
-  # 1.7 merging "remote" repos in monorepo
+  # 1.9 merging "remote" repos in monorepo
   info "Merging other repos to monorepo..."
 
   for REPO in $EXTERNAL_REPOS
@@ -125,7 +127,7 @@ ALL_REPOS="$EXTERNAL_REPOS vm"
   info "OK"
 
 
-
+# X. Rename git tags
 
 
 
