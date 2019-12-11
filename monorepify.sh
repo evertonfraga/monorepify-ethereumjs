@@ -119,7 +119,7 @@ migrate_github_files() {
   info "5. Making cascade tests changes..."
   # context: https://github.com/ethereumjs/ethereumjs-vm/issues/561#issuecomment-558943311
   cd $CWD
-  node make-test-cascade.js  
+  node gh-actions-make-cascade-tests.js
   
   cd $MONOREPO
   git commit .github/workflows -m 'monorepo: Adding test cascade directives'
