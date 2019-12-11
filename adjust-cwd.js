@@ -20,20 +20,29 @@ workflowFiles.map(file => {
     const filePath = path.join(basePath, file)
     const obj = yaml.safeLoad(fs.readFileSync(filePath, 'utf8'))
     
-    // Adds env variable with path
+    // 1. Adds env variable with path
     for (const job in obj.jobs) {
-        const envCwd = { cwd: '${{github.workspace}}/package/' + packageName }
+        const envCwd = { cwd: '${{github.workspace}}/packages/' + packageName }
         obj.jobs[job]['env'] = Object.assign(obj.jobs[job]['env'] || {}, envCwd)
 
-        // Adds working-directory to each step run
         for (const step in obj.jobs[job].steps) {
-            if (obj.jobs[job].steps[step].run) {
-                
-                const stepObj = obj.jobs[job].steps[step]
+            const stepObject = obj.jobs[job].steps[step]
+            
+            // 2. Adds working-directory to each step run
+            if (stepObject.run) {
                 const workingDirectory = {'working-directory': '${{ env.cwd }}'}
 
-                obj.jobs[job].steps[step] = Object.assign(stepObj, workingDirectory)
+                obj.jobs[job].steps[step] = Object.assign(stepObject, workingDirectory)
             }
+
+            // 3. Sets path for Coverage reports
+            if (stepObject.uses && stepObject.uses === 'coverallsapp/github-action@master') {
+                const coverallsPath = {
+                    'path-to-lcov': '${{ env.cwd }}/coverage/lcov.info'
+                }
+                obj.jobs[job].steps[step] = Object.assign(stepObject, coverallsPath)
+            }
+            
         }
     }
 
