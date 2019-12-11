@@ -131,7 +131,7 @@ fix_cwd_github_files() {
   info "Fix github actions execution paths"
 
   cd $CWD
-  node adjust-cwd.js  
+  node gh-actions-adjust-paths.js
   
   cd $MONOREPO
   git commit .github/workflows -m 'monorepo: Fixing execution paths for github actions'

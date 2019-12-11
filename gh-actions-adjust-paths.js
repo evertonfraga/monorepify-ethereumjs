@@ -1,7 +1,8 @@
 /**
- * This script adjusts working-environment for each step
- * Based on this comment:
- * https://github.com/ethereumjs/ethereumjs-vm/issues/561#issuecomment-558943311
+ * This script adjusts all paths to the new file structure in GH Actions files.
+ * - adds an ENV variable (cwd) to all Jobs
+ * - injects `working-directory:` in all Steps that has `run:` key
+ * - sets `path:` to Coveralls Action invocation
  */
 
 const yaml = require('js-yaml')
