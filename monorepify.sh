@@ -160,19 +160,48 @@ tear_down_remotes() {
   info "OK"
 }
 
+# Changing all link references to the new repo and file structure
 update_link_references() {
-  # Changing all link references to the new repo and file structure
+  section "Update link references"
+  cd $MONOREPO
 
-  # 4.1 Change repo name 
-  # As a commit is pinned, it is OK to keep the file structure
+  # Docs contain several github links referencing classes and methods.
+  # They need to be updated to the new file structure and repo name
+  item "Updating docs links"
+  for REPO in $ALL_REPOS
+  do
+    info "Link updates for ${REPO}"
+    cd $MONOREPO/packages/$REPO
+    npm install
+
+    # docs:build needs to have a proper git origin set, so it generates absolute urls correctly
+    npm run docs:build
+  done
+
+  git commit packages/ -m 'Generating docs with updated urls'
+
+  item "Link updates: changing repo names"
+  # When a commit is pinned, it is OK to keep the file structure
   # Input:  https://github.com/ethereumjs/ethereumjs-tx/blob/5c81b38/src/types.ts#L8
   # Output: https://github.com/ethereumjs/ethereumjs-vm/blob/5c81b38/src/types.ts#L8
 
-  # 4.2 Change file structure for links pointing to `master`
+  item "Link updates: changing file structure"
+  # Change file structure for links pointing to `master`
   # Input:    https://github.com/ethereumjs/ethereumjs-block/blob/master/docs/index.md
   # Output-2: https://github.com/ethereumjs/ethereumjs-vm/blob/master/docs/index.md
   # Output-1: https://github.com/ethereumjs/ethereumjs-vm/blob/master/package/block/docs/index.md
-  info "implementation missing."
+
+  item "Link updates: Changelog tag links"
+  # Links for comparison across tags, found on CHANGELOG
+  # Characters @ and / present on the new tag name format need to be escaped (%40 and %2F respectively)
+  # Input: https://github.com/ethereumjs/ethereumjs-block/compare/v2.2.0...v2.2.1
+  # Output: https://github.com/ethereumjs/ethereumjs-vm/compare/%40ethereumjs%2Fblock%402.2.0...%40ethereumjs%2Fblock%402.2.1) 
+  # Note: sed syntax has some differences among OSes. This command was created targeting MacOS and might fail in Linux
+  sed -E -e 's|(https://github.com/ethereumjs/ethereumjs-)([a-z]+)/compare/v?(.{5})...v?(.{5})|\1vm/compare/%40ethereumjs%2F\2%40\3...%40ethereumjs%2F\4|' -ibak */**/CHANGELOG.md
+  git commit -am 'Updating tag comparison links in CHANGELOG'
+
+  # Cleaning backup files produced by sed
+  git clean -f 
 }
 
 
