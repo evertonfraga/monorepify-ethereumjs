@@ -18,6 +18,7 @@
   "homepage": "https://github.com/evertonfraga/monorepify-ethereumjs#readme",
   "devDependencies": {
     "js-yaml": "^3.13.1",
+    "lerna": "^3.19.0",
     "minimatch": "^3.0.4"
   }
 }
