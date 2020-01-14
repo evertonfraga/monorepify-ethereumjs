@@ -204,6 +204,13 @@ update_link_references() {
   git clean -f 
 }
 
+lerna_init() {
+  section "Lerna Init"
+  cd $MONOREPO
+  npx lerna init
+  git add package.json lerna.json
+  git commit -m 'Lerna'
+}
 
 
 # 
@@ -216,3 +223,4 @@ migrate_github_files
 fix_cwd_github_files
 tear_down_remotes
 update_link_references
+lerna_init
