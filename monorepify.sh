@@ -115,6 +115,7 @@ move_github_files() {
 
   item "Move all .github files to root..."
   git mv packages/vm/.github/contributing.md .github/
+  git mv packages/vm/.github/labeler.yml .github/
   git mv packages/*/.github/workflows/* .github/workflows
 
   item "Remove packages' github dir..."
