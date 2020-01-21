@@ -1,12 +1,14 @@
 <p align="center">
-<img src="https://avatars1.githubusercontent.com/u/16297473?s=200&v=4">
-  </p>
+  <img src="https://avatars1.githubusercontent.com/u/16297473?s=200&v=4">
+</p>
 
 # EthereumJS Monorepo
 
 [![Gitter](https://img.shields.io/gitter/room/ethereum/ethereumjs.svg?style=flat-square)](https://gitter.im/ethereum/ethereumjs)
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
+
+This was originally the EthereumJS VM repository. On Q1 2020 we brought some of its building blocks together to simplify development. Below you can find the packages included in this repository.
 
 
 | package | npm | tests | 
