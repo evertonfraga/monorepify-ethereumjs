@@ -20,6 +20,16 @@ This was originally the EthereumJS VM repository. On Q1 2020 we brought some of 
 | [@ethereumjs/tx](./master/packages/tx)                 | [![NPM Package](https://img.shields.io/npm/v/ethereumjs-tx.svg?style=flat)](https://www.npmjs.org/package/ethereumjs-tx)                 | [![Actions Status](https://github.com/ethereumjs/ethereumjs-tx/workflows/tx-test/badge.svg)](https://github.com/ethereumjs/ethereumjs-tx/actions)                         | 
 | [@ethereumjs/vm](./master/packages/vm)                 | [![NPM Package](https://img.shields.io/npm/v/ethereumjs-vm.svg?style=flat)](https://www.npmjs.org/package/ethereumjs-vm)                 | [![Actions Status](https://github.com/ethereumjs/ethereumjs-vm/workflows/vm-test/badge.svg)](https://github.com/ethereumjs/ethereumjs-vm/actions)                         | 
 
+# Coverage
+
+Detailed version can be seen in [Codecov.io](https://codecov.io/gh/ethereumjs/ethereumjs-vm).
+
+<p align="left">
+  <a href="https://codecov.io/gh/ethereumjs/ethereumjs-vm/">
+    <img src="https://codecov.io/gh/ethereumjs/ethereumjs-vm/branch/master/graphs/icicle.svg" width=750>
+  </a>
+</p>
+
 # EthereumJS
 
 See our organizational [documentation](https://ethereumjs.readthedocs.io) for an introduction to `EthereumJS` as well as information on current standards and best practices.
