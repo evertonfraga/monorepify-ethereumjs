@@ -6,7 +6,8 @@
 
 [![codecov](https://codecov.io/gh/ethereumjs/ethereumjs-vm/branch/master/graph/badge.svg)](https://codecov.io/gh/ethereumjs/ethereumjs-vm)
 [![Gitter](https://img.shields.io/gitter/room/ethereum/ethereumjs.svg?style=flat)](https://gitter.im/ethereum/ethereumjs)
-![Freenode](https://img.shields.io/badge/%23ethereumjs-freenode-green)
+![Freenode](https://img.shields.io/badge/%23ethereumjs-freenode-brightgreen)
+[![StackExchange](https://img.shields.io/badge/ethereumjs-stackexchange-brightgreen)](https://ethereum.stackexchange.com/questions/tagged/ethereumjs)
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
 
