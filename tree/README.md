@@ -4,6 +4,7 @@
 
 # EthereumJS Monorepo
 
+[![codecov](https://codecov.io/gh/ethereumjs/ethereumjs-vm/branch/master/graph/badge.svg)](https://codecov.io/gh/ethereumjs/ethereumjs-vm)
 [![Gitter](https://img.shields.io/gitter/room/ethereum/ethereumjs.svg?style=flat-square)](https://gitter.im/ethereum/ethereumjs)
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
