@@ -39,13 +39,14 @@ workflowFiles.map(file => {
 
     const filePath = path.join(basePath, file)
     const obj = yaml.safeLoad(fs.readFileSync(filePath, 'utf8'))
-    
+
+    if (obj.on.push)
     obj.on = {
         push: {
             'paths-ignore': makeIgnorePaths(packageName)
         }
     }
-
+    // console.log(file, obj)
     fs.writeFileSync(filePath, yaml.dump(obj))
-    console.log(`Changes written to ${file}.`);
+    // console.log(`Changes written to ${file}.`);
 })
