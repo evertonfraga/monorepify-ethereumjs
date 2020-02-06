@@ -15,7 +15,7 @@ mkdir -p packages/$CURRENT_PACKAGE
 CWD=`pwd`/$CURRENT_PACKAGE
 cd $CWD
 
-# Fetching and downloading all versions for specified package
+# Grabbing all published versions
 VERSIONS=`npm view $CURRENT_PACKAGE versions | grep -E -o "(\d+\.\d+\.\d+)"`
 echo "Versions returned for $CURRENT_PACKAGE: $VERSIONS "
 
