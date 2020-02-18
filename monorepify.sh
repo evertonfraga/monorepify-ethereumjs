@@ -261,13 +261,12 @@ copy_files() {
   cp -a ../tree/* .
 
   # Copying dotted directories as well
-  cp -a ../tree/.*/* .
+  cp -a ../tree/.* .
   
   git add .
 
-  git commit -m 'Adding files from ./tree'
+  git commit -m 'Adding peripheral files'
 }
-
 
 # 
 # Execution starts here
