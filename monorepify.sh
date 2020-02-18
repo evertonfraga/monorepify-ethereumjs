@@ -113,28 +113,31 @@ migrate_repos() {
 }
 
 move_github_files() {
-  section "Move Github Files: START"
+  section "Move Github Files"
   cd $MONOREPO
 
   item "Handle files under ./.github..."
   mkdir -p .github/workflows
 
-  item "Move all .github files to root..."
-  git mv packages/vm/.github/contributing.md .github/
-  git mv packages/vm/.github/labeler.yml .github/
+  item "Moving all packages/xxx/.github files to root..."
+  git mv packages/vm/.github/* .github/
   git mv packages/*/.github/workflows/* .github/workflows
 
-  item "Remove packages' github dir..."
+  item "Removing GH workflows for coverage testing — will be handled in step 'copy_files()'...."
+  git rm .github/workflows/*-coverage.yml
+  
+  item "Removing packages' remaining github dir..."
   git rm -rf packages/*/.github --ignore-unmatch # also deletes remaining contributing.md files
 
-  item "Removes all circleci files"
+  item "Removing all remaining CI files"
   git rm -rf packages/*/.circleci --ignore-unmatch
+  git rm -rf packages/*/.travis.yml --ignore-unmatch
 
   item "Committing github changes..."
-  git commit -m 'monorepo: Moving .github files to root; deleting circleci files'
+  git commit -m 'monorepo: Moving .github files to root; deleting other CI files'
   info "Move Github Files: OK"
 }
-
+                                       
 make_tests_cascade() {
   section "Making cascade tests changes..."
   # context: https://github.com/ethereumjs/ethereumjs-vm/issues/561#issuecomment-558943311
@@ -144,8 +147,6 @@ make_tests_cascade() {
   cd $MONOREPO
   git commit .github/workflows -m 'monorepo: Adding test cascade directives'
 
-  # TODO: inject `lerna bootstrap --ignore-scripts` to workflows
-  # TODO: fix ethereumjs-common/dist/genesisStates require
 }
 
 fix_cwd_github_files() {
