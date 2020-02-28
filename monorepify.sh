@@ -117,16 +117,16 @@ move_github_files() {
   cd $MONOREPO
 
   item "Handle files under ./.github..."
-  mkdir -p .github/workflows
+  mkdir -p .github/
 
-  item "Moving all packages/xxx/.github files to root..."
-  git mv packages/vm/.github/* .github/
-  git mv packages/*/.github/workflows/* .github/workflows
-
-  item "Removing GH workflows for coverage testing — will be handled in step 'copy_files()'...."
-  git rm .github/workflows/*-coverage.yml
+  item "Removing GH workflows for coverage testing — will be handled in step 'copy_files()'...." 
+  git rm packages/*/.github/workflows/*-coverage.yml
   
   item "Removing packages' remaining github dir..."
+  item "Moving all packages/xxx/.github files to root..."
+  git mv packages/vm/.github/* .github/
+  git mv packages/*/.github/workflows/* .github/workflows/
+
   git rm -rf packages/*/.github --ignore-unmatch # also deletes remaining contributing.md files
 
   item "Removing all remaining CI files"
@@ -166,7 +166,8 @@ tear_down_remotes() {
   section "Tear down remotes..."
   cd $MONOREPO
 
-  for REMOTE in "$EXTERNAL_REPOS origin"
+  git remote remove origin
+  for REMOTE in $EXTERNAL_REPOS
   do
     git remote remove $REMOTE
   done
@@ -184,7 +185,7 @@ update_link_references() {
   item "Updating docs links"
   for REPO in $ALL_REPOS
   do
-    info "Link updates for ${REPO}"
+    info "Docs updates for ${REPO}"
     cd $MONOREPO/packages/$REPO
 
     npm install
@@ -217,7 +218,7 @@ update_link_references() {
   # Input: https://github.com/ethereumjs/ethereumjs-block/compare/v2.2.0...v2.2.1
   # Output: https://github.com/ethereumjs/ethereumjs-vm/compare/%40ethereumjs%2Fblock%402.2.0...%40ethereumjs%2Fblock%402.2.1 
   # Note: sed syntax has some differences among OSes. This command was created targeting MacOS and might fail in Linux
-  sed -E -e 's|(https://github.com/ethereumjs/ethereumjs-)([a-z]+)/compare/v?(.{5})...v?(.{5})|\1vm/compare/%40ethereumjs%2F\2%40\3...%40ethereumjs%2F\4|' -ibak */**/CHANGELOG.md
+  sed -E -e 's|(https://github.com/ethereumjs/ethereumjs-)([a-z]+)/compare/v?(.{5})...v?(.{5})|\1vm/compare/%40ethereumjs%2F\2%40\3...%40ethereumjs%2F\2%40\4|' -ibak */**/CHANGELOG.md
   git commit -am 'Updating tag comparison links in CHANGELOG'
 
   # Cleaning backup files produced by sed
@@ -258,11 +259,9 @@ copy_files() {
   # Ensures there are no loose files
   git clean -f
 
-  # Copying files
-  cp -a ../tree/* .
-
-  # Copying dotted directories as well
-  cp -a ../tree/.* .
+  # Copying files and dotted files
+  # Mind that if there are conflicting destination directories, the command should change to `cp -a …` instead
+  cp -r ../tree/. .
   
   git add .
 
@@ -285,8 +284,3 @@ tear_down_remotes
 section "Migration completed."
 
 
-
-
-# TODO: Include note about file history
-# TODO: Include dependency graph in ethereumjs ecosystem
-# TODO: Copy lerna files to ./tree
