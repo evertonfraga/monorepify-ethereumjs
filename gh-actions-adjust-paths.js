@@ -2,7 +2,7 @@
  * This script adjusts all paths to the new file structure in GH Actions files.
  * - adds an ENV variable (cwd) to all Jobs
  * - injects `working-directory:` in all Steps that has `run:` key
- * - sets `path:` to Coveralls Action invocation
+ * - injects lerna bootstrap --ignore-scripts to link all matching packages locally
  */
 
 const yaml = require('js-yaml')
@@ -35,16 +35,6 @@ workflowFiles.map(file => {
 
                 obj.jobs[job].steps[step] = Object.assign(stepObject, workingDirectory)
             }
-
-            // 2. Sets path for Coverage reports
-            if (stepObject.uses && stepObject.uses === 'coverallsapp/github-action@master') {
-                shouldInjectCwd = true
-                const coverallsPath = {
-                    'path-to-lcov': '${{ env.cwd }}/coverage/lcov.info'
-                }
-                obj.jobs[job].steps[step].with = Object.assign(stepObject.with, coverallsPath)
-            }
-            
         }
     
         // 3. Adds env variable with path
