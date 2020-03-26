@@ -62,29 +62,29 @@ if [[ $PUBLISH != '--publish' ]]; then
     do
         cd $CWD
 
-        # Create a directory for each version, to receive the unpacked package
-        mkdir $VERSION
+        # # Create a directory for each version, to receive the unpacked package
+        # mkdir $VERSION
 
-        # Unpacks files to the corresponding directory.
-        #   strip-components=1 removes the /package directory from the tarball
-        #   -C defines the destination path
-        tar -xvzf $CURRENT_PACKAGE-$VERSION.tgz --strip-components=1 -C $VERSION
+        # # Unpacks files to the corresponding directory.
+        # #   strip-components=1 removes the /package directory from the tarball
+        # #   -C defines the destination path
+        # tar -xvzf $CURRENT_PACKAGE-$VERSION.tgz --strip-components=1 -C $VERSION
 
         cd $VERSION
         pwd
 
-        # # Changing package name
-        cat package.json | jq --arg NAME "$NEW_PACKAGE_NAME" '.name = $NAME' > package.json1
-        mv package.json1 package.json
+        # # # Changing package name
+        # cat package.json | jq --arg NAME "$NEW_PACKAGE_NAME" '.name = $NAME' > package.json1
+        # mv package.json1 package.json
 
         # # Displaying new name saved on package.json
         cat package.json | jq '.name'
 
-        rm ../$CURRENT_PACKAGE-$VERSION.tgz
+        # rm ../$CURRENT_PACKAGE-$VERSION.tgz
 
         # We need to skip the execution of npm publish scripts, 
         # so we'll pack them to tgz first, then upload.
-        npm pack
+        npm pack --ignore-scripts
 
         mv *$VERSION.tgz ../
     done
